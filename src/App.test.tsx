@@ -65,4 +65,12 @@ describe("SEARCH VARIANTS, async (when the component fetches the user successful
       render(<App/>);
       await waitFor(() => expect(mockGetUser).toHaveBeenCalledTimes(1));
     })
+    test("should render the username entered", async () => {
+      const name = 'Juliana';
+      mockGetUser.mockImplementationOnce(() => Promise.resolve({ id: '1', name: name }));
+      render(<App/>);
+      screen.debug();
+      expect(await screen.findByText(`Username: ${name}`)).toBeInTheDocument();
+      screen.debug();
+    })
 })
