@@ -67,7 +67,7 @@ describe("SEARCH VARIANTS, async (when the component fetches the user successful
     })
     test("should render the username entered", async () => {
       const name = 'Juliana';
-      mockGetUser.mockImplementationOnce(() => Promise.resolve({ id: '1', name: name }));
+      mockGetUser.mockResolvedValueOnce({ id: '1', name }); 
       render(<App/>);
       screen.debug();
       expect(await screen.findByText(`Username: ${name}`)).toBeInTheDocument();
