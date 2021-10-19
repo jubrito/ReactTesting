@@ -1,5 +1,5 @@
 // Implicit assertion = assert without using expect statement
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { getUser } from './get-user';
 import App from './App';
 import { mocked } from 'ts-jest/utils';
@@ -32,8 +32,9 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
     screen.getAllByText('Input:'); // implicit assertion
   });
 
-  test("should select both input elements by its role", () => {
-    expect(screen.getAllByRole('textbox').length).toBe(2);
+  test("should select one input elements by its role", () => {
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getAllByRole('textbox').length).toBe(1);
   });
 
   test("should select a label element by its text", () => {
@@ -73,4 +74,16 @@ describe("SEARCH VARIANTS, async (when the component fetches the user successful
       render(<App/>);
       expect(await screen.findByText(`Username: ${name}`)).toBeInTheDocument();
     })
+})
+
+describe("USER INTERACTION, when user enter text on input", () => {
+  test("should display the text in the screen", async () => {
+    render(<App/>);
+    await waitFor(() => expect(mockGetUser).toHaveBeenCalled());
+    expect(screen.getByText(/You typed: .../));
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'Juliana Brito' }
+    })
+    expect(screen.getByText(/You typed: Juliana Brito/));
+  })
 })
