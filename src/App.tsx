@@ -1,14 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+interface User {
+  id: string;
+  name: string;
+}
+
+function getUser(): Promise<User> {
+  return Promise.resolve({id: '1', name: 'Juliana'});
+}
+
 function App() {
   const [text, setText] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUserFromMocketApi = async () => {
+      const user = await getUser();
+      setUser(user);
+    };
+    fetchUserFromMocketApi();
+  }, []);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setText(event.target.value);
   }
   return (
     <div>
+      {user ? <p>Username: {user.name}</p> : null}
       <CustomInput value={text} onChange={handleChange}>
         Input:
       </CustomInput>
