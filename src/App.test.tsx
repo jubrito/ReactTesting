@@ -3,6 +3,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { getUser } from './get-user';
 import App from './App';
 import { mocked } from 'ts-jest/utils';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('./get-user');
 const allFunctionsInsideAlsoNeedToBeMocked = true;
@@ -40,7 +41,7 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
   test("should select a label element by its text", () => {
     // It doesn't require 'all' like the other tests because both labels have for="search" so react understand them as one
     screen.getByLabelText(/Input/);
-    screen.debug();
+    // screen.debug();
   });
 
   test("should select input element by placeholder text", () => {
@@ -77,13 +78,23 @@ describe("SEARCH VARIANTS, async (when the component fetches the user successful
 })
 
 describe("USER INTERACTION, when user enter text on input", () => {
-  test("should display the text in the screen", async () => {
+  test("(fireEvent) should display the text in the screen", async () => {
     render(<App/>);
     await waitFor(() => expect(mockGetUser).toHaveBeenCalled());
     expect(screen.getByText(/You typed: .../));
     fireEvent.change(screen.getByRole('textbox'), {
-      target: { value: 'Juliana Brito' }
+      target: { value: 'Juliana Witzke' }
     })
+    expect(screen.getByText(/You typed: Juliana Witzke/));
+  })
+  test("(useEvent) should display the text in the screen", async () => {
+    // mimics the actual browser behavior more closely than the fire event
+    render(<App/>);
+    await waitFor(() => expect(mockGetUser).toHaveBeenCalledWith());
+    expect(screen.getByText(/You typed: .../));
+    const textboxElement = screen.getByRole('textbox');
+    await userEvent.type(textboxElement, 'Juliana Brito');
     expect(screen.getByText(/You typed: Juliana Brito/));
   })
 })
+
