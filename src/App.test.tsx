@@ -3,26 +3,44 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-describe("when the app is rendered", () => {
+describe("SEARCH TYPES => throws errors (getBy)", () => {
   beforeEach(() => {
     render(<App/>);
   })
-  test("should render app without errors", () => {
-    screen.debug();
-  })
+
+  test("should throw an error when it doesn't find inexisting input because search types throw errors", () => {
+    let error;
+    try {
+      screen.getByLabelText(/whatever/);
+    } catch (err) {
+      error = err;
+    }
+    expect(error).toBeDefined();
+  });
+
   test("should select the children that is being passed to the CustomInput component", () => {
     screen.getByText('Input:'); // implicit assertion
+  });
 
-  })
   test("should select input element by its role", () => {
     expect(screen.getByRole('textbox')).toBeInTheDocument(); // explicit assertion
-  })
+  });
 
   test("should select a label element by its text", () => {
     screen.getByLabelText(/Input/);
-  })
+  });
 
   test("should select input element by placeholder text", () => {
     screen.getByPlaceholderText('example');
+  });
+})
+
+describe("SEARCH VARIANTS => don't throw errors (queryBy)", () => {
+  beforeEach(() => {
+    render(<App/>);
+  })
+  test("should return null when it doesn't find inexisting role because search variants don't throw errors", () => {
+    const result = screen.queryByRole('whatever');
+    expect(result).toBeNull();
   })
 })
