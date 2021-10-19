@@ -6,8 +6,8 @@ import { mocked } from 'ts-jest/utils';
 
 jest.mock('./get-user');
 const allFunctionsInsideAlsoNeedToBeMocked = true;
-const mockGetUser = mocked(getUser, allFunctionsInsideAlsoNeedToBeMocked)
-const waitingForComponentChangesToTestAfterIt = async () => {
+const mockGetUser = mocked(getUser, allFunctionsInsideAlsoNeedToBeMocked);
+const waitForComponentChangesToTestAfterIt = async () => {
   await waitFor(() => expect(mockGetUser).toHaveBeenCalled())
 };
 
@@ -15,7 +15,7 @@ const waitingForComponentChangesToTestAfterIt = async () => {
 describe("SEARCH TYPES => throws errors (getBy)", () => {
   beforeEach(async () => {
     render(<App/>);
-    await waitingForComponentChangesToTestAfterIt();
+    await waitForComponentChangesToTestAfterIt();
   })
 
   test("should throw an error when it doesn't find inexisting input because search types throw errors", () => {
@@ -48,11 +48,21 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
 describe("SEARCH VARIANTS => don't throw errors (queryBy)", () => {
   beforeEach(async () => {
     render(<App/>);
-    await waitingForComponentChangesToTestAfterIt();
+    await waitForComponentChangesToTestAfterIt();
     
   })
   test("should return null when it doesn't find inexisting role because search variants don't throw errors", () => {
     const result = screen.queryByRole('whatever');
     expect(result).toBeNull();
   })
+})
+
+describe("SEARCH VARIANTS, async (when the component fetches the user successfully)", () => {
+    beforeEach(() => {
+      mockGetUser.mockClear();
+    })
+    test("should call api (getUser) once", async () => {
+      render(<App/>);
+      await waitFor(() => expect(mockGetUser).toHaveBeenCalledTimes(1));
+    })
 })
