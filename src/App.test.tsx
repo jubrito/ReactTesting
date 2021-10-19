@@ -29,19 +29,21 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
   });
 
   test("should select the children that is being passed to the CustomInput component", () => {
-    screen.getByText('Input:'); // implicit assertion
+    screen.getAllByText('Input:'); // implicit assertion
   });
 
-  test("should select input element by its role", () => {
-    expect(screen.getByRole('textbox')).toBeInTheDocument(); // explicit assertion
+  test("should select both input elements by its role", () => {
+    expect(screen.getAllByRole('textbox').length).toBe(2);
   });
 
   test("should select a label element by its text", () => {
+    // It doesn't require 'all' like the other tests because both labels have for="search" so react understand them as one
     screen.getByLabelText(/Input/);
+    screen.debug();
   });
 
   test("should select input element by placeholder text", () => {
-    screen.getByPlaceholderText('example');
+    screen.getAllByPlaceholderText('example');
   });
 })
 
@@ -69,8 +71,6 @@ describe("SEARCH VARIANTS, async (when the component fetches the user successful
       const name = 'Juliana';
       mockGetUser.mockResolvedValueOnce({ id: '1', name }); 
       render(<App/>);
-      screen.debug();
       expect(await screen.findByText(`Username: ${name}`)).toBeInTheDocument();
-      screen.debug();
     })
 })
