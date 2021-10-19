@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
+import { User, getUser } from './get-user';
 import './App.css';
-
-interface User {
-  id: string;
-  name: string;
-}
-
-function getUser(): Promise<User> {
-  return Promise.resolve({id: '1', name: 'Juliana'});
-}
 
 function App() {
   const [text, setText] = useState('');

@@ -1,11 +1,21 @@
 // Implicit assertion = assert without using expect statement
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { getUser } from './get-user';
 import App from './App';
+import { mocked } from 'ts-jest/utils';
+
+jest.mock('./get-user');
+const allFunctionsInsideAlsoNeedToBeMocked = true;
+const mockGetUser = mocked(getUser, allFunctionsInsideAlsoNeedToBeMocked)
+const waitingForComponentChangesToTestAfterIt = async () => {
+  await waitFor(() => expect(mockGetUser).toHaveBeenCalled())
+};
+
 
 describe("SEARCH TYPES => throws errors (getBy)", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     render(<App/>);
+    await waitingForComponentChangesToTestAfterIt();
   })
 
   test("should throw an error when it doesn't find inexisting input because search types throw errors", () => {
@@ -36,8 +46,10 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
 })
 
 describe("SEARCH VARIANTS => don't throw errors (queryBy)", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     render(<App/>);
+    await waitingForComponentChangesToTestAfterIt();
+    
   })
   test("should return null when it doesn't find inexisting role because search variants don't throw errors", () => {
     const result = screen.queryByRole('whatever');
