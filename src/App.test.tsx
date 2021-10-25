@@ -27,7 +27,7 @@ describe("SEARCH TYPES => throws errors (getBy)", () => {
       error = err;
     }
     expect(error).toBeDefined();
-  });
+  });                                              
 
   test("should select the children that is being passed to the CustomInput component", () => {
     screen.getAllByText('Input:'); // implicit assertion
